@@ -1,3 +1,27 @@
+/************************************************************************************************
+The MIT License (MIT)
+
+Copyright (c) 2015 Microsoft Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+***********************************************************************************************/
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -7,7 +31,6 @@ using Microsoft.Identity.Web.Client;
 using Microsoft.Identity.Web.Resource;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Microsoft.Identity.Web
@@ -15,11 +38,11 @@ namespace Microsoft.Identity.Web
     public static class StartupHelpers
     {
         /// <summary>
-        /// Add authentication with Microsoft identity platform v2.0 (AAD v2.0).
-        /// This supposes that the configuration files have a section named "AzureAD"
+        /// Add authentication with Microsoft identity platform.
+        /// This expects the configuration files will have a section named "AzureAD"
         /// </summary>
-        /// <param name="services">Service collection to which to add authentication</param>
-        /// <param name="configuration">Configuration</param>
+        /// <param name="services">Service collection to which to add this authentication scheme</param>
+        /// <param name="configuration">The Configuration object</param>
         /// <returns></returns>
         public static IServiceCollection AddAzureAdV2Authentication(this IServiceCollection services, IConfiguration configuration)
         {
@@ -43,14 +66,17 @@ namespace Microsoft.Identity.Web
                 // If you want to restrict the users that can sign-in to several organizations
                 // Set the tenant value in the appsettings.json file to 'organizations', and add the
                 // issuers you want to accept to options.TokenValidationParameters.ValidIssuers collection
-                options.TokenValidationParameters.IssuerValidator = AadIssuerValidator.ForAadInstance(options.Authority).ValidateAadIssuer;
+                options.TokenValidationParameters.IssuerValidator = AadIssuerValidator.GetIssuerValidator(options.Authority).Validate;
 
                 // Set the nameClaimType to be preferred_username.
                 // This change is needed because certain token claims from Azure AD V1 endpoint
-                // (on which the original .NET core template is based) are different than Azure AD V2 endpoint.
+                // (on which the original .NET core template is based) are different than Microsoft identity platform endpoint.
                 // For more details see [ID Tokens](https://docs.microsoft.com/en-us/azure/active-directory/develop/id-tokens)
                 // and [Access Tokens](https://docs.microsoft.com/en-us/azure/active-directory/develop/access-tokens)
                 options.TokenValidationParameters.NameClaimType = "preferred_username";
+
+                // Force the account selection (to avoid automatic sign-in with the account signed-in with Windows)
+                //options.Prompt = "select_account";
 
                 // Avoids having users being presented the select account dialog when they are already signed-in
                 // for instance when going through incremental consent
@@ -130,12 +156,6 @@ namespace Microsoft.Identity.Web
                     // Remove the account from MSAL.NET token cache
                     var _tokenAcquisition = context.HttpContext.RequestServices.GetRequiredService<ITokenAcquisition>();
                     await _tokenAcquisition.RemoveAccount(context);
-
-                    var user = context.HttpContext.User;
-
-                    // Avoid displaying the select account dialog
-                    context.ProtocolMessage.LoginHint = user.GetLoginHint();
-                    context.ProtocolMessage.DomainHint = user.GetDomainHint();
                 };
             });
             return services;

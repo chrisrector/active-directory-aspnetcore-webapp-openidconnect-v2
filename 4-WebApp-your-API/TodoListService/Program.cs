@@ -1,7 +1,7 @@
-﻿/************************************************************************************************
-The MIT License (MIT)
+﻿/*
+ The MIT License (MIT)
 
-Copyright (c) 2015 Microsoft Corporation
+Copyright (c) 2018 Microsoft Corporation
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,17 +20,22 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-***********************************************************************************************/
+ */
 
-namespace Microsoft.Identity.Web
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+
+namespace TodoListService
 {
-    /// <summary>
-    /// claim keys constants
-    /// </summary>
-    public static class ClaimConstants
+    public class Program
     {
-        public const string ObjectId = "http://schemas.microsoft.com/identity/claims/objectidentifier";
-        public const string TenantId = "http://schemas.microsoft.com/identity/claims/tenantid";
-        public const string tid = "tid";
+        public static void Main(string[] args)
+        {
+            CreateWebHostBuilder(args).Build().Run();
+        }
+
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>();
     }
 }

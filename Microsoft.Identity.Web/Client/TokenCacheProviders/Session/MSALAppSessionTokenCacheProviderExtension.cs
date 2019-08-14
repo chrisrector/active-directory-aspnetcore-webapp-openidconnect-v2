@@ -23,6 +23,7 @@ SOFTWARE.
 */
 
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -46,11 +47,11 @@ namespace Microsoft.Identity.Web.Client.TokenCacheProviders
         /// <returns></returns>
         public static IServiceCollection AddSessionAppTokenCache(this IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
             services.AddScoped<IMSALAppTokenCacheProvider>(factory =>
             {
-                var optionsMonitor = factory.GetRequiredService<IOptionsMonitor<AzureADOptions>>();
-
-                return new MSALAppSessionTokenCacheProvider(optionsMonitor);
+                return new MSALAppSessionTokenCacheProvider(factory.GetRequiredService<IOptionsMonitor<AzureADOptions>>(),
+                                                            factory.GetRequiredService<IHttpContextAccessor>());
             });
 
             return services;
@@ -61,6 +62,7 @@ namespace Microsoft.Identity.Web.Client.TokenCacheProviders
         /// <returns></returns>
         public static IServiceCollection AddSessionPerUserTokenCache(this IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
             services.AddScoped<IMSALUserTokenCacheProvider, MSALPerUserSessionTokenCacheProvider>();
             return services;
         }

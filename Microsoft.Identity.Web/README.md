@@ -1,11 +1,13 @@
 # Microsoft Identity Web
 
+[![Build status](https://identitydivision.visualstudio.com/IDDP/_apis/build/status/AAD%20Samples/.NET%20client%20samples/ASP.NET%20Core%20Web%20App%20tutorial)](https://identitydivision.visualstudio.com/IDDP/_build/latest?definitionId=819)
+
 This library contains a set of reusable classes useful in Web Applications and Web APIs (collectively referred to as Web resources) that sign-in users and call Web APIs
 
 The library contains helper classes to:
 
 - **Bootstrap the web resource from the Startup.cs file** in your web application by just calling a few methods
-  - `AddAzureAdV2Authentication` to add authentication with the Microsoft Identity platform (AAD v2.0), including managing the authority validation, and the sign-out.
+  - `AddAzureAdV2Authentication` to add authentication with the Microsoft Identity platform, including managing the authority validation.
   
     ```CSharp
     services.AddAzureAdV2Authentication();
@@ -22,7 +24,7 @@ The library contains helper classes to:
     ![image](https://user-images.githubusercontent.com/13203188/53899064-a100ab80-4039-11e9-8869-fa9cffcd345a.png)
   
 - Protect Web resources (in the `Resources` folder)
-  - `AadIssuerValidator` is used to validate the issuer in multi-tenant applications, taking into account the aliases for authorities exising in Azure AD. This class works both for Azure AD v1.0 and Microsoft Identity platform v2.0 web resources. You should not need to use it directly, as it's used by `AddAzureAdV2Authentication`
+  - `AadIssuerValidator` is used to validate the issuer in multi-tenant applications, taking into account the aliases for authorities exising in Azure AD. This class works both for Azure AD (v1.0) and Microsoft identity platform (v2.0) web resources. You should not need to use it directly, as it's used by `AddAzureAdV2Authentication`
   - `OpenIdConnectMiddlewareDiagnostics` helps you understand what happens in the Open Id Connect Middleware. This is a diagnostics class that can help you troubleshooting your Web apps.
   - `ClaimsPrincipalExtensions` provides a set of extension methods on `ClaimsPrincipal` helping getting information from the signed-in user. It's used in the other classes of the libraries.
 

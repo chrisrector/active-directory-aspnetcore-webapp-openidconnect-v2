@@ -5,7 +5,7 @@ author: kalyankrishna1
 level: 400
 client: ASP.NET Core 2.x Web App
 service: Microsoft Graph
-endpoint: AAD v2.0
+endpoint: Microsoft identity platform
 ---
 
 # Add authorization using groups & group claims to an ASP.NET Core Web app that signs-in users with the Microsoft identity platform
@@ -19,15 +19,15 @@ Security groups are a popular means to implement authorization.
 
 Authorization in Azure AD can also be done with Application Roles, as shown in [WebApp-RoleClaims](https://github.com/Azure-Samples/active-directory-aspnetcore-webapp-openidconnect-v2/tree/master/5-WebApp-AuthZ/5-1-Roles). Azure AD Groups and Application Roles are by no means mutually exclusive - they can be used in tandem to provide even finer grained access control.
 
-![Build badge](https://identitydivision.visualstudio.com/_apis/public/build/definitions/a7934fdd-dcde-4492-a406-7fad6ac00e17/514/badge)
+[![Build status](https://identitydivision.visualstudio.com/IDDP/_apis/build/status/AAD%20Samples/.NET%20client%20samples/ASP.NET%20Core%20Web%20App%20tutorial)](https://identitydivision.visualstudio.com/IDDP/_build/latest?definitionId=819)
 
 ## Scenario
 
 This sample first leverages the ASP.NET Core OpenID Connect middleware to sign in the user. On the home page it displays the various `claims` that the user's [ID Token](https://docs.microsoft.com/en-us/azure/active-directory/develop/id-tokens) contained. The ID token is used by the asp.net security middleware to build the [ClaimsPrincipal](https://docs.microsoft.com/en-us/dotnet/api/system.security.claims.claimsprincipal), accessible via **HttpContext.User**.
 
-![Sign in with the Microsoft identity platform for developers (formerly Azure AD v2.0)](ReadmeFiles/sign-in.png)
+![Sign in with the Microsoft identity platform](ReadmeFiles/sign-in.png)
 
-> This is the fifth chapter of a set of tutorials. Once you understand how to receive the group memberships in a user's claims, you can try the sample [Add authorization using app roles & roles claims to an ASP.NET Core Web app thats signs-in users with the Microsoft identity platform](../../5-WebApp-AuthZ-Roles) to learn about how to use the App roles in an app using the Microsoft Identity Platform to authenticate users. 
+> This is the fifth chapter of a set of tutorials. Once you understand how to receive the group memberships in a user's claims, you can try the sample [Add authorization using app roles & roles claims to an ASP.NET Core Web app thats signs-in users with the Microsoft identity platform](../../5-WebApp-AuthZ/5-1-Roles) to learn about how to use the App roles in an app using the Microsoft Identity Platform to authenticate users. 
 
 > Pre-requisites:
 >
@@ -83,7 +83,7 @@ Navigate to the `"5-WebApp-AuthZ"` folder
 
 1. Clean the solution, rebuild the solution, and run it.
 
-2. Open your web browser and make a request to the app. The app immediately attempts to authenticate you via the Microsoft identity platform (formerly Azure AD v2.0) endpoint. Sign in with a work or school account.
+2. Open your web browser and make a request to the app. The app immediately attempts to authenticate you via the Microsoft identity platform endpoint. Sign in with a work or school account.
 
 1. On the home page, the app lists the various claims it obtained from your ID token. You'd notice one more claims named `groups`. If **Overage** occurred, then you'd see a different claim by the name `_claim_names`. The **Overage** scenario is discussed in detail below. 
 1. On the top menu, click on the signed-in user's name **user@domain.com**, you should now see all kind of information about yourself including your picture. Beneath that, a list of all the security groups that the signed-in user is assigned to are listed as well. All of this was obtained by making calls to Microsoft Graph. This list is useful, if an **Overage** occurs with this signed-in user. The **overage** scenario is discussed later in this article. 
@@ -180,9 +180,9 @@ public void ConfigureAuth(IAppBuilder app)
 
 
 // In code..(Controllers & elsewhere)
-[Authorize(Roles = “AlicesGroup")]
+[Authorize(Roles = “Group-object-id")]
 // or
-User.IsInRole("AlicesGroup");
+User.IsInRole("Group-object-id");
 
 ```
 

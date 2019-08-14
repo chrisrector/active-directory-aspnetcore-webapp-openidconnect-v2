@@ -23,6 +23,7 @@ SOFTWARE.
 */
 
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -38,7 +39,7 @@ namespace Microsoft.Identity.Web.Client.TokenCacheProviders
         /// <returns></returns>
         public static IServiceCollection AddInMemoryTokenCaches(this IServiceCollection services, MSALMemoryTokenCacheOptions cacheOptions = null)
         {
-            var memoryCacheoptions = (cacheOptions == null) ? new MSALMemoryTokenCacheOptions { AbsoluteExpiration = DateTimeOffset.Now.AddDays(14) }
+            var memoryCacheoptions = (cacheOptions == null) ? new MSALMemoryTokenCacheOptions { SlidingExpiration = TimeSpan.FromDays(14) }
             : cacheOptions;
 
             AddInMemoryAppTokenCache(services, memoryCacheoptions);
@@ -72,11 +73,12 @@ namespace Microsoft.Identity.Web.Client.TokenCacheProviders
         public static IServiceCollection AddInMemoryPerUserTokenCache(this IServiceCollection services, MSALMemoryTokenCacheOptions cacheOptions)
         {
             services.AddMemoryCache();
-
+            services.AddHttpContextAccessor();
             services.AddSingleton<IMSALUserTokenCacheProvider>(factory =>
             {
                 var memoryCache = factory.GetRequiredService<IMemoryCache>();
-                return new MSALPerUserMemoryTokenCacheProvider(memoryCache, cacheOptions);
+                IHttpContextAccessor httpContextAccessor = factory.GetRequiredService<IHttpContextAccessor>();
+                return new MSALPerUserMemoryTokenCacheProvider(memoryCache, cacheOptions, httpContextAccessor);
             });
 
             return services;

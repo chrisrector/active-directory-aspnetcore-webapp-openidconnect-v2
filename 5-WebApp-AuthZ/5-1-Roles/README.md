@@ -5,7 +5,7 @@ author: kalyankrishna1
 level: 300
 client: ASP.NET Core 2.x Web App
 service: Microsoft Graph
-endpoint: AAD v2.0
+endpoint: Microsoft identity platform
 ---
 
 # Add authorization using **app roles** & **roles** claims to an ASP.NET Core web app thats signs-in users with the Microsoft identity platform
@@ -16,9 +16,9 @@ endpoint: AAD v2.0
 
 This sample shows how a .NET Core 2.2 MVC Web app that uses [OpenID Connect](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-protocols-openid-connect-code) to sign in users and use Azure AD Application Roles (app roles) for authorization. App roles, along with Security groups are popular means to implement authorization.
 
-This application implements RBAC using Azure AD's Application Roles & Role Claims feature. Another approach is to use Azure AD Groups and Group Claims, as shown in [WebApp-GroupClaims](../../../5-WebApp-AuthZ/5-2-Groups). Azure AD Groups and Application Roles are by no means mutually exclusive; they can be used in tandem to provide even finer grained access control.
+This application implements RBAC using Azure AD's Application Roles & Role Claims feature. Another approach is to use Azure AD Groups and Group Claims, as shown in [WebApp-GroupClaims](../../5-WebApp-AuthZ/5-2-Groups). Azure AD Groups and Application Roles are by no means mutually exclusive; they can be used in tandem to provide even finer grained access control.
 
-![Build badge](https://identitydivision.visualstudio.com/_apis/public/build/definitions/a7934fdd-dcde-4492-a406-7fad6ac00e17/514/badge)
+[![Build status](https://identitydivision.visualstudio.com/IDDP/_apis/build/status/AAD%20Samples/.NET%20client%20samples/ASP.NET%20Core%20Web%20App%20tutorial)](https://identitydivision.visualstudio.com/IDDP/_build/latest?definitionId=819)
 
 Using RBAC with Application Roles and Role Claims, developers can securely enforce authorization policies with minimal effort on their part.
 
@@ -43,7 +43,7 @@ These application roles are defined in the [Azure portal](https://portal.azure.c
 
 NOTE: Role claims will not be present for guest users in a tenant if the `/common` endpoint is used as the authority.
 
-![Sign in with the Microsoft identity platform for developers (formerly Azure AD v2.0)](ReadmeFiles/sign-in.png)
+![Sign in with the Microsoft identity platform](ReadmeFiles/sign-in.png)
 
 > This is the sixth chapter of a set of tutorials. In the chapter before this one, you learned how to receive the group memberships in a user's claims. In this one you will learn about how to use the App roles in an app using the Microsoft Identity Platform to authenticate users.
 
@@ -84,19 +84,6 @@ Navigate to the `"5-WebApp-AuthZ"` folder
   ```
 
 ### Step 2: Configure your application to receive the **roles** claims
-
-1. In your application settings page on the Application Registration Portal (preview), click on "Manifest" to open the inline manifest editor.
-2. Edit the manifest by locating the "groupMembershipClaims" setting, and setting its value to "SecurityGroup".
-3. Save the manifest.
-
-```JSON
-{
-  ...
-  "errorUrl": null,
-  "groupMembershipClaims": "SecurityGroup",
-  ...
-}
-```
 
 1. To receive the `roles` claim with the name of the app roles this user is assigned to, make sure that the user accounts you plan to sign-in to this app is assigned to the app roles of this app.
 
@@ -167,11 +154,11 @@ The content of `appRoles` should be the following (the `id` can be any unique Gu
 
 1. Clean the solution, rebuild the solution, and run it.
 
-1. Open your web browser and make a request to the app. The app immediately attempts to authenticate you via the Microsoft identity platform (formerly Azure AD v2.0) endpoint. Sign in with a work or school account.
+1. Open your web browser and make a request to the app. The app immediately attempts to authenticate you via the Microsoft identity platform endpoint. Sign in with a work or school account.
 
 1. You will be prompted to consent during the sign-in process.
 
-![First time Consent](ReadmeFiles/Sign-in-Consent)
+![First time Consent](ReadmeFiles/Sign-in-Consent.png)
 
 1. On the home page, the app lists the various claims it obtained from your [ID token](https://docs.microsoft.com/en-us/azure/active-directory/develop/id-tokens). You'd notice a claim named `roles`. There will be one `roles` claim for each app role the signed-in use is assigned to.
 
@@ -230,7 +217,7 @@ When you click on the page that fetches the signed-in user's roles and group ass
 
 ## Next steps
 
-- Learn how to use app roles. [Add authorization using security groups & groups claims to a Web app thats signs-in users with the Microsoft identity platform](../../../../5-WebApp-AuthZ/5-1-Groups).
+- Learn how to use app groups. [Add authorization using security groups & groups claims to a Web app thats signs-in users with the Microsoft identity platform](../../5-WebApp-AuthZ/5-2-Groups).
 
 ## Learn more
 
